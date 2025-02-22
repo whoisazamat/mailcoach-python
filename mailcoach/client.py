@@ -1,5 +1,5 @@
-from mailcoach.entities.email_lists import EmailLists
 from mailcoach.helpers.requestor import Requestor
+from mailcoach.resources.email_lists import EmailLists
 
 
 class MailCoachClient:
