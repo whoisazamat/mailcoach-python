@@ -11,7 +11,6 @@ def test_email_lists_get_all(email_lists, mock_requestor):
     ]
 
     results = list(email_lists.get_all())
-    # Rsults should be
     expected_calls = [
         ("GET", "email-lists"),
         ("GET", "email-lists?page=2"),
@@ -20,3 +19,10 @@ def test_email_lists_get_all(email_lists, mock_requestor):
 
     assert actual_calls == expected_calls
     assert results == [{"uuid": 1, "name": "List 1"}, {"uuid": 2, "name": "List 2"}]
+
+
+def test_email_lists_get(email_lists, mock_requestor):
+    expected_response = {"data": [{"uuid": 1, "name": "List 1"}]}
+    mock_requestor.send_request.return_value = expected_response
+    response = email_lists.get(uuid="4a0c4c34-9a82-4746-bfeb-e45a7a38526b")
+    assert response[0] == expected_response["data"][0]
