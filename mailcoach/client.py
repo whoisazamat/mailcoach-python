@@ -1,0 +1,16 @@
+from mailcoach.entities.email_lists import EmailLists
+from mailcoach.helpers.requestor import Requestor
+
+
+class MailCoachClient:
+    def __init__(self, token: str, url_root: str):
+        requestor = Requestor(
+            url_root=url_root,
+            token=token,
+            request_headers={
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "Authorization": f"Bearer {token}",
+            },
+        )
+        self.email_lists = EmailLists(requestor)
