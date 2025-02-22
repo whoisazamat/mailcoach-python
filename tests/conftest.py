@@ -16,9 +16,3 @@ def mock_requestor():
 @pytest.fixture
 def email_lists(mock_requestor):
     return EmailLists(mock_requestor)
-
-
-@pytest.fixture
-def email_lists_response():
-    with open(os.path.join(os.path.dirname(__file__), "test_data", "email_lists.json"), 'r') as file:
-        return json.load(file)
