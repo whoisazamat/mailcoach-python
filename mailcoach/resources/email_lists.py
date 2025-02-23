@@ -26,3 +26,9 @@ class EmailLists(BaseResource):
             uuid=uuid,
             data=data,
         )
+
+    def delete(self, uuid: str) -> dict:
+        return self.delete_item(
+            endpoint="email-lists",
+            uuid=uuid,
+        )

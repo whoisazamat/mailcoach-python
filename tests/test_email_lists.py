@@ -40,3 +40,10 @@ def test_email_lists_update(email_lists, mock_requestor):
     mock_requestor.send_request.return_value = expected_response
     response = email_lists.update(uuid="4a0c4c34-9a82-4746-bfeb-e45a7a38526b", data={"uuid": 1, "name": "List 1"})
     assert response == expected_response["data"]
+
+
+def test_email_lists_delete(email_lists, mock_requestor):
+    expected_response = {"status": "OK"}
+    mock_requestor.send_request.return_value = expected_response
+    response = email_lists.delete(uuid="4a0c4c34-9a82-4746-bfeb-e45a7a38526b")
+    assert response == expected_response

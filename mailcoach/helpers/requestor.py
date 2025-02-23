@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 import requests
 
 from mailcoach.exceptions import RequestError
@@ -25,5 +27,9 @@ class Requestor:
             )
         except requests.exceptions.RequestException as error:
             raise RequestError(error)
+
+        # DELETE method doesn't return any json, so return just status OK
+        if response.status_code == HTTPStatus.NO_CONTENT:
+            return {"status": "OK"}
 
         return response.json()

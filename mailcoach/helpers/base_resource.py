@@ -18,7 +18,7 @@ class BaseResource:
         """Retrieve specific data by uuid."""
         response = self.requestor.send_request(
             method="GET",
-            url=f"/{endpoint}/{uuid}",
+            url=f"{endpoint}/{uuid}",
         )
         return response.get("data", {})
 
@@ -33,7 +33,13 @@ class BaseResource:
     def update_item(self, endpoint: str, uuid: str, data: dict) -> dict:
         response = self.requestor.send_request(
             method="PUT",
-            url=f"/{endpoint}/{uuid}",
+            url=f"{endpoint}/{uuid}",
             data=data,
         )
         return response.get("data", {})
+
+    def delete_item(self, endpoint: str, uuid: str) -> dict:
+        return self.requestor.send_request(
+            method="DELETE",
+            url=f"{endpoint}/{uuid}",
+        )
