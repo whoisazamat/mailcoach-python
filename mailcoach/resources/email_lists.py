@@ -9,8 +9,7 @@ class EmailLists(BaseResource):
         return self.iter_all("email-lists")
 
     def get(self, uuid: str) -> dict:
-        response = self.requestor.send_request(
-            method="GET",
-            url=f"/email-lists/{uuid}",
+        return self.get_specific_item(
+            endpoint="/email-lists/",
+            uuid=uuid,
         )
-        return response["data"]

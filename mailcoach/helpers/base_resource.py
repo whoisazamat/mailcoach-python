@@ -13,3 +13,11 @@ class BaseResource:
             yield from response.get("data", [])
 
             endpoint = response.get("links", {}).get("next")
+
+    def get_specific_item(self, endpoint: str, uuid: str) -> dict:
+        """Retrieve specific data by uuid."""
+        response = self.requestor.send_request(
+            method="GET",
+            url=f"/{endpoint}/{uuid}",
+        )
+        return response.get("data", {})
