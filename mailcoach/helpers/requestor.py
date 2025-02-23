@@ -9,9 +9,12 @@ class Requestor:
         self.token = token
         self.request_headers = request_headers
 
+    def _build_url(self, url: str) -> str:
+        return f"{self.url_root}/api/{url.lstrip('/')}"
+
     def send_request(self, method: str, url: str, data: dict | None = None) -> dict:
         """Send a request to the MailCoach API."""
-        full_url = f"{self.url_root}/api/{url.lstrip('/')}"
+        full_url = self._build_url(url)
 
         try:
             response = requests.request(

@@ -10,12 +10,19 @@ class EmailLists(BaseResource):
 
     def get(self, uuid: str) -> dict:
         return self.get_specific_item(
-            endpoint="/email-lists/",
+            endpoint="email-lists",
             uuid=uuid,
         )
 
     def add(self, email_list_data: dict) -> dict:
         return self.add_item(
-            endpoint="/email-lists/",
+            endpoint="email-lists",
             data=email_list_data,
+        )
+
+    def update(self, uuid: str, data: dict) -> dict:
+        return self.update_item(
+            endpoint="email-lists",
+            uuid=uuid,
+            data=data,
         )

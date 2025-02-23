@@ -29,3 +29,11 @@ class BaseResource:
             data=data,
         )
         return response.get("data", {})
+
+    def update_item(self, endpoint: str, uuid: str, data: dict) -> dict:
+        response = self.requestor.send_request(
+            method="PUT",
+            url=f"/{endpoint}/{uuid}",
+            data=data,
+        )
+        return response.get("data", {})
