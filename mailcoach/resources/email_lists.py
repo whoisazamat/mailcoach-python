@@ -13,3 +13,9 @@ class EmailLists(BaseResource):
             endpoint="/email-lists/",
             uuid=uuid,
         )
+
+    def add(self, email_list_data: dict) -> dict:
+        return self.add_item(
+            endpoint="/email-lists/",
+            data=email_list_data,
+        )

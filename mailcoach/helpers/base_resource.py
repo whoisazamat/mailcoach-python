@@ -21,3 +21,11 @@ class BaseResource:
             url=f"/{endpoint}/{uuid}",
         )
         return response.get("data", {})
+
+    def add_item(self, endpoint: str, data: dict) -> dict:
+        response = self.requestor.send_request(
+            method="POST",
+            url=endpoint,
+            data=data,
+        )
+        return response.get("data", {})
