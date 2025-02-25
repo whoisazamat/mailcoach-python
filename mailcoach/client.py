@@ -1,5 +1,6 @@
 from mailcoach.helpers.requestor import Requestor
 from mailcoach.resources.email_lists import EmailList
+from mailcoach.resources.tags import Tag
 
 
 class MailCoachClient:
@@ -14,3 +15,4 @@ class MailCoachClient:
             },
         )
         self.email_lists = EmailList(requestor)
+        self.tags = Tag(requestor)
