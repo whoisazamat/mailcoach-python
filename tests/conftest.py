@@ -4,7 +4,7 @@ import os
 
 import pytest
 
-from mailcoach.resources.email_lists import EmailLists
+from mailcoach.resources.email_lists import EmailList
 from mailcoach.helpers.requestor import Requestor
 
 
@@ -15,4 +15,4 @@ def mock_requestor():
 
 @pytest.fixture
 def email_lists(mock_requestor):
-    return EmailLists(mock_requestor)
+    return EmailList(mock_requestor)

@@ -1,5 +1,5 @@
 from mailcoach.helpers.requestor import Requestor
-from mailcoach.resources.email_lists import EmailLists
+from mailcoach.resources.email_lists import EmailList
 
 
 class MailCoachClient:
@@ -13,4 +13,4 @@ class MailCoachClient:
                 "Authorization": f"Bearer {token}",
             },
         )
-        self.email_lists = EmailLists(requestor)
+        self.email_lists = EmailList(requestor)
