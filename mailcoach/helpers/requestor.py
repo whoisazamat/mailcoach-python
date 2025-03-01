@@ -29,6 +29,10 @@ class Requestor:
         except requests.exceptions.RequestException as error:
             raise RequestError(error)
 
+        if response.status_code != HTTPStatus.OK:
+            error_message = f"Unexpected response {response.status_code}: {response.text}"
+            raise RequestError(error_message)
+
         if response.status_code == HTTPStatus.NO_CONTENT:
             return {"status": "OK"}
 
