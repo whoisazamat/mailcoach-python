@@ -15,7 +15,7 @@ class BaseResource:
             raise NotImplementedError(error_message)
         self.requestor = requestor
 
-    def validate_required_params(self, method_name: str, kwargs: dict) -> None:
+    def _validate_required_params(self, method_name: str, kwargs: dict) -> None:
         """Ensure that all required parameters are provided for a specific method."""
         required_params = self.required_params.get(method_name, [])
         missing_params = [param for param in required_params if param not in kwargs]
@@ -28,7 +28,7 @@ class BaseResource:
 
         *args is added to catch positional arguments and provide a clear error message if needed.
         """
-        self.validate_required_params("get_all", kwargs)
+        self._validate_required_params("get_all", kwargs)
         endpoint = self.endpoint_template.format(**kwargs)
 
         while endpoint:
@@ -39,7 +39,7 @@ class BaseResource:
     def get(self, uuid: str, **kwargs: dict) -> dict:
         """Retrieve a specific item by UUID."""
         kwargs["uuid"] = uuid
-        self.validate_required_params("get", kwargs)
+        self._validate_required_params("get", kwargs)
 
         endpoint = f"{self.endpoint_template.format(**kwargs)}/{uuid}"
         response = self.requestor.send_request("GET", endpoint)
@@ -48,7 +48,7 @@ class BaseResource:
     def add(self, data: dict, **kwargs: dict) -> dict:
         """Add a new item to the resource."""
         kwargs["data"] = data
-        self.validate_required_params("add", kwargs)
+        self._validate_required_params("add", kwargs)
 
         endpoint = self.endpoint_template.format(**kwargs)
         response = self.requestor.send_request("POST", endpoint, data=data)
@@ -58,7 +58,7 @@ class BaseResource:
         """Update an existing item by UUID."""
         kwargs["uuid"] = uuid
         kwargs["data"] = data
-        self.validate_required_params("update", kwargs)
+        self._validate_required_params("update", kwargs)
 
         endpoint = f"{self.endpoint_template.format(**kwargs)}/{uuid}"
         response = self.requestor.send_request("PUT", endpoint, data=data)
@@ -67,7 +67,7 @@ class BaseResource:
     def remove(self, uuid: str, **kwargs: dict[str, str]) -> dict:
         """Delete an item by UUID."""
         kwargs["uuid"] = uuid
-        self.validate_required_params("remove", kwargs)
+        self._validate_required_params("remove", kwargs)
 
         endpoint = f"{self.endpoint_template.format(**kwargs)}/{uuid}"
         return self.requestor.send_request("DELETE", endpoint)
