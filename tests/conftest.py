@@ -1,18 +1,23 @@
-from unittest.mock import Mock
-import json
-import os
+from unittest.mock import MagicMock
 
 import pytest
 
-from mailcoach.resources.email_lists import EmailList
 from mailcoach.helpers.requestor import Requestor
 
 
 @pytest.fixture
 def mock_requestor():
-    return Mock(spec=Requestor)
+    """Fixture to create a mocked Requestor."""
+    return MagicMock(spec=Requestor)
 
 
 @pytest.fixture
-def email_lists(mock_requestor):
-    return EmailList(mock_requestor)
+def sample_response():
+    """Fixture for a sample API response."""
+    return {"data": {"uuid": "123", "name": "Test"}}
+
+
+@pytest.fixture
+def sample_data():
+    """Fixture for sample data."""
+    return {"name": "updated name"}

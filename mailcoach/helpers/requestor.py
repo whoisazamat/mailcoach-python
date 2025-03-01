@@ -11,8 +11,9 @@ class Requestor:
         self.token = token
         self.request_headers = request_headers
 
-    def _build_url(self, url: str) -> str:
-        return f"{self.url_root}/api/{url.lstrip('/')}"
+    def _build_url(self, relative_path: str) -> str:
+        """Build the full API URL from the relative path."""
+        return f"{self.url_root}/api/{relative_path.lstrip('/')}"
 
     def send_request(self, method: str, url: str, data: dict | None = None) -> dict:
         """Send a request to the MailCoach API."""
@@ -28,7 +29,6 @@ class Requestor:
         except requests.exceptions.RequestException as error:
             raise RequestError(error)
 
-        # DELETE method doesn't return any json, so return just status OK
         if response.status_code == HTTPStatus.NO_CONTENT:
             return {"status": "OK"}
 

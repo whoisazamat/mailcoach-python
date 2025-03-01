@@ -1,6 +1,7 @@
 from mailcoach.helpers.requestor import Requestor
-from mailcoach.resources.email_lists import EmailList
-from mailcoach.resources.tags import Tag
+from mailcoach.resources.email_lists import EmailListResource
+from mailcoach.resources.tags import TagResource
+from mailcoach.resources.segments import SegmentResource
 
 
 class MailCoachClient:
@@ -14,5 +15,6 @@ class MailCoachClient:
                 "Authorization": f"Bearer {token}",
             },
         )
-        self.email_lists = EmailList(requestor)
-        self.tags = Tag(requestor)
+        self.email_lists = EmailListResource(requestor)
+        self.tags = TagResource(requestor)
+        self.segments = SegmentResource(requestor)
