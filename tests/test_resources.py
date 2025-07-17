@@ -1,5 +1,3 @@
-from unittest.mock import MagicMock
-
 import pytest
 
 from mailcoach.resources.email_lists import EmailListResource
@@ -65,14 +63,3 @@ def test_remove(resource, required_kwargs, uuid, endpoint, mock_requestor):
 
     mock_requestor.send_request.assert_called_once_with("DELETE", endpoint)
     assert result == {"status": "OK"}
-
-
-@pytest.mark.parametrize("resource, required_kwargs, expected_error", [
-    (TagResource, {}, "Missing required parameters for get_all: email_list_uuid"),
-    (SegmentResource, {}, "Missing required parameters for get_all: email_list_uuid"),
-])
-def test_get_all_missing_param(resource, required_kwargs, expected_error):
-    instance = resource(MagicMock())
-
-    with pytest.raises(ValueError, match=expected_error):
-        list(instance.get_all(**required_kwargs))

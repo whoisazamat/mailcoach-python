@@ -1,8 +1,8 @@
 from mailcoach.helpers.requestor import Requestor
-from mailcoach.resources.email_lists import EmailListResource
-from mailcoach.resources.tags import TagResource
-from mailcoach.resources.segments import SegmentResource
 from mailcoach.resources.campaigns import CampaignResource
+from mailcoach.resources.email_lists import EmailListResource
+from mailcoach.resources.segments import SegmentResource
+from mailcoach.resources.tags import TagResource
 
 
 class MailCoachClient:

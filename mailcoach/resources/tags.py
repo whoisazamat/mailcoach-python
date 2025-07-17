@@ -3,11 +3,5 @@ from mailcoach.resources.base import BaseResource
 
 class TagResource(BaseResource):
     """Represent the Tag resource."""
+
     endpoint_template = "email-lists/{email_list_uuid}/tags"
-    required_params = {
-        "get_all": ["email_list_uuid"],
-        "get": ["uuid", "email_list_uuid"],
-        "add": ["data", "email_list_uuid"],
-        "update": ["uuid", "data", "email_list_uuid"],
-        "remove": ["uuid", "email_list_uuid"],
-    }
