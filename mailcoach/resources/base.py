@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from string import Formatter
 from typing import Any, ClassVar
+from urllib.parse import urlencode
 
 from mailcoach.helpers.requestor import Requestor
 
@@ -41,6 +42,14 @@ class BaseResource:
         """Path to a single item; resources whose items live elsewhere override this."""
         return f"{self._endpoint(**kwargs)}/{uuid}"
 
+    @staticmethod
+    def _filter_string(filters: dict[str, str] | None) -> str:
+        """Render filters the way the API expects them: ?filter[name]=value."""
+        if not filters:
+            return ""
+
+        return "?" + urlencode({f"filter[{name}]": value for name, value in filters.items()})
+
     def _paginate(self, endpoint: str) -> Iterator[dict[str, Any]]:
         """Yield every item across the pages the API links together."""
         next_endpoint: str | None = endpoint
@@ -56,9 +65,9 @@ class BaseResource:
         data: dict[str, Any] = response.get("data", {})
         return data
 
-    def get_all(self, **kwargs: str) -> Iterator[dict[str, Any]]:
-        """Retrieve all items from the resource with pagination support."""
-        return self._paginate(self._endpoint(**kwargs))
+    def get_all(self, *, filters: dict[str, str] | None = None, **kwargs: str) -> Iterator[dict[str, Any]]:
+        """Retrieve all items from the resource with pagination support, optionally narrowed by filters."""
+        return self._paginate(self._endpoint(**kwargs) + self._filter_string(filters))
 
     def get(self, uuid: str, **kwargs: str) -> dict[str, Any]:
         """Retrieve a specific item by UUID."""

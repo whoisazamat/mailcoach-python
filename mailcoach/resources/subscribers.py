@@ -23,6 +23,10 @@ class SubscriberResource(BaseResource):
         response = self.requestor.send_request("PATCH", self._item_endpoint(uuid, **kwargs), data=data)
         return self._unwrap(response)
 
+    def find_by_email(self, email: str, **kwargs: str) -> dict[str, Any] | None:
+        """Return the one subscriber of an email list holding this address, or None when there is none."""
+        return next(self.get_all(filters={"email": email}, **kwargs), None)
+
     def confirm(self, uuid: str) -> None:
         """Complete the subscriber's double opt-in."""
         self.requestor.send_request("POST", f"subscribers/{uuid}/confirm")
