@@ -79,14 +79,13 @@ def test_update(resource, kwargs, endpoint, mock_requestor, sample_data, sample_
 
 
 @pytest.mark.parametrize("resource, kwargs, endpoint", RESOURCES)
-def test_remove(resource, kwargs, endpoint, mock_requestor):
+def test_delete(resource, kwargs, endpoint, mock_requestor):
     instance = resource(mock_requestor)
     mock_requestor.send_request.return_value = {}
 
-    result = instance.remove(UUID, **kwargs)
+    assert instance.delete(UUID, **kwargs) is None
 
     mock_requestor.send_request.assert_called_once_with("DELETE", f"{endpoint}/{UUID}")
-    assert result == {}
 
 
 @pytest.mark.parametrize("resource, kwargs, _endpoint", RESOURCES)
@@ -100,7 +99,23 @@ def test_missing_data_key_yields_empty_result(resource, kwargs, _endpoint, mock_
 
 def test_endpoint_template_is_required(mock_requestor):
     class NamelessResource(EmailListResource):
-        endpoint_template = None
+        endpoint_template = ""
 
     with pytest.raises(NotImplementedError, match="endpoint_template"):
         NamelessResource(mock_requestor)
+
+
+@pytest.mark.parametrize("method, args", [
+    ("get_all", ()),
+    ("get", (UUID,)),
+    ("add", ({},)),
+    ("update", (UUID, {})),
+    ("delete", (UUID,)),
+])
+def test_missing_template_argument_raises_at_call_time(method, args, mock_requestor):
+    instance = TagResource(mock_requestor)
+
+    with pytest.raises(TypeError, match="email_list_uuid"):
+        getattr(instance, method)(*args)
+
+    mock_requestor.send_request.assert_not_called()
