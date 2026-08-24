@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from mailcoach.helpers.requestor import Requestor
+from mailcoach.transport import Requestor
 
 
 URL_ROOT = "https://mailcoach.test"

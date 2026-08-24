@@ -1,7 +1,6 @@
 from types import TracebackType
 from typing import Self
 
-from mailcoach.helpers.requestor import DEFAULT_TIMEOUT, Requestor
 from mailcoach.resources.automations import AutomationMailResource, AutomationResource
 from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
@@ -9,6 +8,7 @@ from mailcoach.resources.subscribers import SubscriberResource
 from mailcoach.resources.tags import TagResource
 from mailcoach.resources.templates import TemplateResource
 from mailcoach.resources.transactional import TransactionalMailResource, TransactionalMailTemplateResource
+from mailcoach.transport import DEFAULT_TIMEOUT, Requestor
 
 
 class MailCoachClient:

@@ -3,7 +3,7 @@ from string import Formatter
 from typing import Any, ClassVar
 from urllib.parse import urlencode
 
-from mailcoach.helpers.requestor import Requestor
+from mailcoach.transport import Requestor
 
 
 class ReadOnlyResource:

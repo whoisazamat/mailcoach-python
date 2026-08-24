@@ -1,5 +1,5 @@
-from mailcoach.helpers.requestor import Requestor
 from mailcoach.resources.base import BaseResource
+from mailcoach.transport import Requestor
 
 
 class AutomationMailResource(BaseResource):

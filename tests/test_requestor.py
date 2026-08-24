@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from mailcoach.exceptions import APIError, RequestError
-from mailcoach.helpers.requestor import Requestor
+from mailcoach.transport import Requestor
 from tests.conftest import URL_ROOT
 
 
