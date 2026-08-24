@@ -6,8 +6,8 @@ from urllib.parse import urlencode
 from mailcoach.helpers.requestor import Requestor
 
 
-class BaseResource:
-    """Base class for all API resources."""
+class ReadOnlyResource:
+    """Base class for API resources the API only lets us read."""
 
     endpoint_template: ClassVar[str] = ""
 
@@ -73,6 +73,10 @@ class BaseResource:
         """Retrieve a specific item by UUID."""
         response = self.requestor.send_request("GET", self._item_endpoint(uuid, **kwargs))
         return self._unwrap(response)
+
+
+class BaseResource(ReadOnlyResource):
+    """Base class for API resources supporting the full set of CRUD operations."""
 
     def add(self, data: dict[str, Any], **kwargs: str) -> dict[str, Any]:
         """Add a new item to the resource."""
