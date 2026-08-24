@@ -1,7 +1,7 @@
 import pytest
 import requests
 
-from mailcoach.exceptions import RequestError
+from mailcoach.exceptions import APIError, RequestError
 from mailcoach.helpers.requestor import Requestor
 
 from tests.conftest import URL_ROOT
@@ -62,7 +62,7 @@ def test_send_request_returns_empty_dict_for_empty_body(requestor, requests_mock
 def test_send_request_raises_on_error_status(requestor, requests_mock, status_code):
     requests_mock.get(f"{URL_ROOT}/api/campaigns", status_code=status_code, text="denied")
 
-    with pytest.raises(RequestError, match=f"Unexpected response {status_code}: denied"):
+    with pytest.raises(APIError, match=f"Unexpected response {status_code}: denied"):
         requestor.send_request("GET", "campaigns")
 
 
