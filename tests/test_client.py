@@ -5,6 +5,7 @@ from mailcoach.helpers.requestor import DEFAULT_TIMEOUT
 from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
 from mailcoach.resources.segments import SegmentResource
+from mailcoach.resources.subscribers import SubscriberResource
 from mailcoach.resources.tags import TagResource
 from tests.conftest import URL_ROOT
 
@@ -20,6 +21,7 @@ def client():
     ("tags", TagResource),
     ("segments", SegmentResource),
     ("campaigns", CampaignResource),
+    ("subscribers", SubscriberResource),
 ])
 def test_client_exposes_resource(client, attribute, resource):
     assert isinstance(getattr(client, attribute), resource)
@@ -28,7 +30,8 @@ def test_client_exposes_resource(client, attribute, resource):
 def test_resources_share_one_requestor(client):
     # A single session means one connection pool and one place holding the token.
     requestors = {id(client.email_lists.requestor), id(client.tags.requestor),
-                  id(client.segments.requestor), id(client.campaigns.requestor)}
+                  id(client.segments.requestor), id(client.campaigns.requestor),
+                  id(client.subscribers.requestor)}
 
     assert requestors == {id(client.requestor)}
 

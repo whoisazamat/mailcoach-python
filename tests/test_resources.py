@@ -88,6 +88,16 @@ def test_delete(resource, kwargs, endpoint, mock_requestor):
 
 
 @pytest.mark.parametrize(("resource", "kwargs", "_endpoint"), RESOURCES)
+def test_unknown_keyword_argument_is_rejected(resource, kwargs, _endpoint, mock_requestor):
+    instance = resource(mock_requestor)
+
+    with pytest.raises(TypeError, match="unexpected keyword arguments: nonsense"):
+        instance.get_all(nonsense="x", **kwargs)
+
+    mock_requestor.send_request.assert_not_called()
+
+
+@pytest.mark.parametrize(("resource", "kwargs", "_endpoint"), RESOURCES)
 def test_missing_data_key_yields_empty_result(resource, kwargs, _endpoint, mock_requestor):
     instance = resource(mock_requestor)
     mock_requestor.send_request.return_value = {}

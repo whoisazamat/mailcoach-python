@@ -33,7 +33,7 @@ def test_send_test_joins_addresses(campaigns, mock_requestor):
     campaigns.send_test(UUID, ["first@mailcoach.test", "second@mailcoach.test"])
 
     mock_requestor.send_request.assert_called_once_with(
-        "POST", f"campaigns/{UUID}/send_test", data={"email": "first@mailcoach.test,second@mailcoach.test"},
+        "POST", f"campaigns/{UUID}/send-test", data={"email": "first@mailcoach.test,second@mailcoach.test"},
     )
 
 

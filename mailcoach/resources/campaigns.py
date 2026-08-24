@@ -18,7 +18,7 @@ class CampaignResource(BaseResource):
     def send_test(self, uuid: str, email_list: list[str]) -> None:
         """Send a test copy of the campaign to the given addresses."""
         data = {"email": ",".join(email_list)}
-        self.requestor.send_request("POST", f"{self.endpoint_template}/{uuid}/send_test", data=data)
+        self.requestor.send_request("POST", f"{self.endpoint_template}/{uuid}/send-test", data=data)
 
     def send(self, uuid: str) -> None:
         """Send the campaign to its email list."""

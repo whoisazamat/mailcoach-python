@@ -5,6 +5,7 @@ from mailcoach.helpers.requestor import DEFAULT_TIMEOUT, Requestor
 from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
 from mailcoach.resources.segments import SegmentResource
+from mailcoach.resources.subscribers import SubscriberResource
 from mailcoach.resources.tags import TagResource
 
 
@@ -18,6 +19,7 @@ class MailCoachClient:
         self.tags = TagResource(self.requestor)
         self.segments = SegmentResource(self.requestor)
         self.campaigns = CampaignResource(self.requestor)
+        self.subscribers = SubscriberResource(self.requestor)
 
     def close(self) -> None:
         """Release the underlying connection pool."""
