@@ -1,17 +1,19 @@
 import pytest
 
+from mailcoach.resources.automations import AutomationMailResource
 from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
-from mailcoach.resources.segments import SegmentResource
 from mailcoach.resources.tags import TagResource
+from mailcoach.resources.templates import TemplateResource
 from tests.conftest import EMAIL_LIST_UUID, URL_ROOT, UUID
 
 
 RESOURCES = [
     (EmailListResource, {}, "email-lists"),
     (TagResource, {"email_list_uuid": EMAIL_LIST_UUID}, f"email-lists/{EMAIL_LIST_UUID}/tags"),
-    (SegmentResource, {"email_list_uuid": EMAIL_LIST_UUID}, f"email-lists/{EMAIL_LIST_UUID}/segments"),
     (CampaignResource, {}, "campaigns"),
+    (TemplateResource, {}, "templates"),
+    (AutomationMailResource, {}, "automation-mails"),
 ]
 
 

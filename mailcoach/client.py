@@ -2,11 +2,13 @@ from types import TracebackType
 from typing import Self
 
 from mailcoach.helpers.requestor import DEFAULT_TIMEOUT, Requestor
+from mailcoach.resources.automations import AutomationMailResource, AutomationResource
 from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
-from mailcoach.resources.segments import SegmentResource
 from mailcoach.resources.subscribers import SubscriberResource
 from mailcoach.resources.tags import TagResource
+from mailcoach.resources.templates import TemplateResource
+from mailcoach.resources.transactional import TransactionalMailResource, TransactionalMailTemplateResource
 
 
 class MailCoachClient:
@@ -17,9 +19,13 @@ class MailCoachClient:
 
         self.email_lists = EmailListResource(self.requestor)
         self.tags = TagResource(self.requestor)
-        self.segments = SegmentResource(self.requestor)
         self.campaigns = CampaignResource(self.requestor)
         self.subscribers = SubscriberResource(self.requestor)
+        self.templates = TemplateResource(self.requestor)
+        self.automation_mails = AutomationMailResource(self.requestor)
+        self.automations = AutomationResource(self.requestor)
+        self.transactional_mails = TransactionalMailResource(self.requestor)
+        self.transactional_mail_templates = TransactionalMailTemplateResource(self.requestor)
 
     def close(self) -> None:
         """Release the underlying connection pool."""
