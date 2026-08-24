@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 from urllib.parse import urlsplit
 
 import requests
@@ -29,7 +29,7 @@ STATUS_ERRORS: dict[int, type[APIError]] = {
 class Requestor:
     """Send HTTP requests to the Mailcoach API and unwrap their JSON bodies."""
 
-    def __init__(self, url_root: str, token: str, timeout: float = DEFAULT_TIMEOUT):
+    def __init__(self, url_root: str, token: str, timeout: float = DEFAULT_TIMEOUT) -> None:
         self.url_root = url_root.rstrip("/")
         self.timeout = timeout
         self.session = requests.Session()
@@ -75,7 +75,7 @@ class Requestor:
             retry_after=int(retry_after) if retry_after and retry_after.isdigit() else None,
         )
 
-    def send_request(self, method: str, url: str, data: dict | None = None) -> dict[str, Any]:
+    def send_request(self, method: str, url: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
         """Send a request to the MailCoach API and return its decoded body, or {} when it has none."""
         full_url = self._build_url(url)
 
@@ -91,16 +91,18 @@ class Requestor:
             return {}
 
         try:
-            return response.json()
+            body: dict[str, Any] = response.json()
         except ValueError as error:
             error_message = f"Malformed JSON in response to {method} {full_url}: {response.text[:200]}"
             raise RequestError(error_message) from error
+
+        return body
 
     def close(self) -> None:
         """Release the underlying connection pool."""
         self.session.close()
 
-    def __enter__(self) -> "Requestor":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(

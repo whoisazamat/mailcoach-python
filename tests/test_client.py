@@ -6,7 +6,6 @@ from mailcoach.resources.campaigns import CampaignResource
 from mailcoach.resources.email_lists import EmailListResource
 from mailcoach.resources.segments import SegmentResource
 from mailcoach.resources.tags import TagResource
-
 from tests.conftest import URL_ROOT
 
 
@@ -16,7 +15,7 @@ def client():
         yield instance
 
 
-@pytest.mark.parametrize("attribute, resource", [
+@pytest.mark.parametrize(("attribute", "resource"), [
     ("email_lists", EmailListResource),
     ("tags", TagResource),
     ("segments", SegmentResource),

@@ -9,7 +9,7 @@ class BaseResource:
 
     endpoint_template: ClassVar[str] = ""
 
-    def __init__(self, requestor: Requestor):
+    def __init__(self, requestor: Requestor) -> None:
         if not self.endpoint_template:
             error_message = f"{type(self).__name__} must define endpoint_template"
             raise NotImplementedError(error_message)
@@ -36,20 +36,26 @@ class BaseResource:
         """Retrieve all items from the resource with pagination support."""
         return self._paginate(self._endpoint(**kwargs))
 
+    @staticmethod
+    def _unwrap(response: dict[str, Any]) -> dict[str, Any]:
+        """Take the item out of the envelope the API wraps single resources in."""
+        data: dict[str, Any] = response.get("data", {})
+        return data
+
     def get(self, uuid: str, **kwargs: str) -> dict[str, Any]:
         """Retrieve a specific item by UUID."""
         response = self.requestor.send_request("GET", f"{self._endpoint(**kwargs)}/{uuid}")
-        return response.get("data", {})
+        return self._unwrap(response)
 
-    def add(self, data: dict, **kwargs: str) -> dict[str, Any]:
+    def add(self, data: dict[str, Any], **kwargs: str) -> dict[str, Any]:
         """Add a new item to the resource."""
         response = self.requestor.send_request("POST", self._endpoint(**kwargs), data=data)
-        return response.get("data", {})
+        return self._unwrap(response)
 
-    def update(self, uuid: str, data: dict, **kwargs: str) -> dict[str, Any]:
+    def update(self, uuid: str, data: dict[str, Any], **kwargs: str) -> dict[str, Any]:
         """Update an existing item by UUID."""
         response = self.requestor.send_request("PUT", f"{self._endpoint(**kwargs)}/{uuid}", data=data)
-        return response.get("data", {})
+        return self._unwrap(response)
 
     def delete(self, uuid: str, **kwargs: str) -> None:
         """Delete an item by UUID."""

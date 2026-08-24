@@ -3,11 +3,10 @@ import requests
 
 from mailcoach.exceptions import APIError, RequestError
 from mailcoach.helpers.requestor import Requestor
-
 from tests.conftest import URL_ROOT
 
 
-@pytest.mark.parametrize("path, expected", [
+@pytest.mark.parametrize(("path", "expected"), [
     ("campaigns", f"{URL_ROOT}/api/campaigns"),
     ("/campaigns", f"{URL_ROOT}/api/campaigns"),
     ("email-lists/test-email-list-uuid/tags", f"{URL_ROOT}/api/email-lists/test-email-list-uuid/tags"),

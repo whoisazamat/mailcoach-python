@@ -9,11 +9,11 @@ class CampaignResource(BaseResource):
 
     endpoint_template = "campaigns"
 
-    def schedule(self, uuid: str, schedule_at: str, data: dict) -> dict[str, Any]:
+    def schedule(self, uuid: str, schedule_at: str, data: dict[str, Any]) -> dict[str, Any]:
         """Schedule a campaign for delivery at the given time."""
         payload = {**data, "schedule_at": schedule_at}
         response = self.requestor.send_request("PUT", f"{self.endpoint_template}/{uuid}", data=payload)
-        return response.get("data", {})
+        return self._unwrap(response)
 
     def send_test(self, uuid: str, email_list: list[str]) -> None:
         """Send a test copy of the campaign to the given addresses."""

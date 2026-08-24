@@ -9,11 +9,10 @@ from mailcoach.exceptions import (
     RequestError,
     ValidationError,
 )
-
 from tests.conftest import URL_ROOT
 
 
-@pytest.mark.parametrize("status_code, error_class", [
+@pytest.mark.parametrize(("status_code", "error_class"), [
     (401, AuthenticationError),
     (403, AuthenticationError),
     (404, NotFoundError),

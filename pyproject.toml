@@ -11,20 +11,33 @@ fail_under = 100
 show_missing = true
 
 
+[tool.mypy]
+python_version = "3.11"
+files = ["mailcoach", "tests"]
+strict = true
+warn_unreachable = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+
 [tool.ruff]
 line-length = 120
-fix = true
-lint.select = ["ALL"]
-lint.ignore = ["D1", "D203", "D213", "FA102", "ANN204", "S113", "B904", "F821", "RUF012"]
+target-version = "py311"
+extend-exclude = ["run.py"]
 cache-dir = "/tmp/ruff-cache/"
-extend-exclude = ["tests", "src/bad.py"]
+lint.select = ["ALL"]
+lint.ignore = ["CPY001", "D100", "D104", "D105", "D107", "D203", "D213"]
 
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ANN", "D1", "PLR0913", "PLR0917", "PLR2004", "S101", "S106", "SLF001"]
 
 [tool.ruff.lint.isort]
 lines-after-imports = 2
 no-lines-before = ["standard-library", "local-folder"]
-known-third-party = []
-known-local-folder = ["source"]
+known-first-party = ["mailcoach", "tests"]
 
 [tool.ruff.format]
 quote-style = "double"

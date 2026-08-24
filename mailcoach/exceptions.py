@@ -18,7 +18,7 @@ class APIError(MailcoachError):
         status_code: int,
         body: dict[str, Any] | None = None,
         retry_after: int | None = None,
-    ):
+    ) -> None:
         super().__init__(message)
         self.status_code = status_code
         self.body = body or {}
@@ -39,7 +39,8 @@ class ValidationError(APIError):
     @property
     def errors(self) -> dict[str, list[str]]:
         """Field name to the list of messages the API returned for it."""
-        return self.body.get("errors", {})
+        errors: dict[str, list[str]] = self.body.get("errors", {})
+        return errors
 
 
 class RateLimitError(APIError):

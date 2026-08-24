@@ -1,7 +1,6 @@
 import pytest
 
 from mailcoach.resources.campaigns import CampaignResource
-
 from tests.conftest import URL_ROOT, UUID
 
 
