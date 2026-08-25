@@ -11,11 +11,11 @@ Python 3.11+
 
 ## Installation
 
-Not on PyPI yet. For now:
-
 ```bash
-pip install git+https://github.com/whoisazamat/mailcoach-python.git
+pip install mailcoach-python
 ```
+
+The distribution is `mailcoach-python`; the import is `mailcoach`.
 
 ## Quick start
 
@@ -208,10 +208,18 @@ Every `APIError` carries `status_code` and `body`. A 5xx arrives as a plain `API
 ## Development
 
 ```bash
-pip install -r requirements.txt
-pytest          # 174 tests, coverage gate at 100% of lines and branches
+pip install -e ".[dev]"
+pytest          # 175 tests, coverage gate at 100% of lines and branches
 ruff check .
 mypy
+```
+
+Releasing:
+
+```bash
+python -m build
+twine check dist/*
+twine upload dist/*
 ```
 
 Coverage is enforced at 100% for lines and branches, so a new endpoint needs its test to land.

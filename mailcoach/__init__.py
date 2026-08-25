@@ -10,6 +10,8 @@ from mailcoach.exceptions import (
 )
 
 
+__version__ = "0.1.0"
+
 __all__ = [
     "APIError",
     "AuthenticationError",
@@ -19,4 +21,5 @@ __all__ = [
     "RateLimitError",
     "RequestError",
     "ValidationError",
+    "__version__",
 ]
