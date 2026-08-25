@@ -8,14 +8,27 @@ from mailcoach.resources.subscribers import SubscriberResource
 from mailcoach.resources.tags import TagResource
 from mailcoach.resources.templates import TemplateResource
 from mailcoach.resources.transactional import TransactionalMailResource, TransactionalMailTemplateResource
-from mailcoach.transport import DEFAULT_TIMEOUT, Requestor
+from mailcoach.transport import DEFAULT_MAX_ATTEMPTS, DEFAULT_MAX_RETRY_WAIT, DEFAULT_TIMEOUT, Requestor
 
 
 class MailCoachClient:
     """Entry point to the Mailcoach API, exposing one attribute per resource."""
 
-    def __init__(self, token: str, url_root: str, timeout: float = DEFAULT_TIMEOUT) -> None:
-        self.requestor = Requestor(url_root=url_root, token=token, timeout=timeout)
+    def __init__(
+        self,
+        token: str,
+        url_root: str,
+        timeout: float = DEFAULT_TIMEOUT,
+        max_attempts: int = DEFAULT_MAX_ATTEMPTS,
+        max_retry_wait: float = DEFAULT_MAX_RETRY_WAIT,
+    ) -> None:
+        self.requestor = Requestor(
+            url_root=url_root,
+            token=token,
+            timeout=timeout,
+            max_attempts=max_attempts,
+            max_retry_wait=max_retry_wait,
+        )
 
         self.email_lists = EmailListResource(self.requestor)
         self.tags = TagResource(self.requestor)

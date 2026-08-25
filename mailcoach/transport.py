@@ -1,3 +1,4 @@
+import time
 from http import HTTPStatus
 from types import TracebackType
 from typing import Any, Self
@@ -16,6 +17,9 @@ from mailcoach.exceptions import (
 
 
 DEFAULT_TIMEOUT = 30.0
+DEFAULT_MAX_ATTEMPTS = 3
+DEFAULT_MAX_RETRY_WAIT = 60.0
+RETRY_BACKOFF = 1.0
 
 STATUS_ERRORS: dict[int, type[APIError]] = {
     HTTPStatus.UNAUTHORIZED: AuthenticationError,
@@ -29,9 +33,22 @@ STATUS_ERRORS: dict[int, type[APIError]] = {
 class Requestor:
     """Send HTTP requests to the Mailcoach API and unwrap their JSON bodies."""
 
-    def __init__(self, url_root: str, token: str, timeout: float = DEFAULT_TIMEOUT) -> None:
+    def __init__(
+        self,
+        url_root: str,
+        token: str,
+        timeout: float = DEFAULT_TIMEOUT,
+        max_attempts: int = DEFAULT_MAX_ATTEMPTS,
+        max_retry_wait: float = DEFAULT_MAX_RETRY_WAIT,
+    ) -> None:
+        if max_attempts < 1:
+            error_message = f"max_attempts must be at least 1, got {max_attempts}"
+            raise ValueError(error_message)
+
         self.url_root = url_root.rstrip("/")
         self.timeout = timeout
+        self.max_attempts = max_attempts
+        self.max_retry_wait = max_retry_wait
         self.session = requests.Session()
         self.session.headers.update({
             "Accept": "application/json",
@@ -75,18 +92,24 @@ class Requestor:
             retry_after=int(retry_after) if retry_after and retry_after.isdigit() else None,
         )
 
-    def send_request(self, method: str, url: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
-        """Send a request to the MailCoach API and return its decoded body, or {} when it has none."""
-        full_url = self._build_url(url)
+    @staticmethod
+    def _is_retryable(status_code: int) -> bool:
+        """Say whether the status is one a later attempt could plausibly get past."""
+        return status_code == HTTPStatus.TOO_MANY_REQUESTS or status_code >= HTTPStatus.INTERNAL_SERVER_ERROR
 
-        try:
-            response = self.session.request(method, full_url, json=data, timeout=self.timeout)
-        except requests.exceptions.RequestException as error:
-            error_message = f"{method} {full_url} failed: {error}"
-            raise RequestError(error_message) from error
+    def _retry_delay(self, attempt: int, retry_after: int | None) -> float:
+        """Honour Retry-After when the API sends it, and back off exponentially when it does not."""
+        if retry_after is not None:
+            return float(retry_after)
 
-        self._raise_for_status(response)
+        return RETRY_BACKOFF * float(2 ** (attempt - 1))
 
+    def _should_retry(self, attempt: int, waited: float, delay: float) -> bool:
+        """Allow another attempt only within both the attempt cap and the total wait budget."""
+        return attempt < self.max_attempts and waited + delay <= self.max_retry_wait
+
+    def _decode(self, response: requests.Response, method: str, full_url: str) -> dict[str, Any]:
+        """Return the decoded body, or {} when the response has none."""
         if not response.content:
             return {}
 
@@ -97,6 +120,38 @@ class Requestor:
             raise RequestError(error_message) from error
 
         return body
+
+    def send_request(self, method: str, url: str, data: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Send a request to the MailCoach API and return its decoded body, or {} when it has none.
+
+        Rate limits and transient faults are retried here rather than by callers, so that pagination
+        in get_all() survives a 429 mid-iteration without the caller seeing a partially consumed list.
+        """
+        full_url = self._build_url(url)
+        attempt = 1
+        waited = 0.0
+
+        while True:
+            try:
+                response = self.session.request(method, full_url, json=data, timeout=self.timeout)
+            except requests.exceptions.RequestException as error:
+                delay = self._retry_delay(attempt, None)
+                if not self._should_retry(attempt, waited, delay):
+                    error_message = f"{method} {full_url} failed: {error}"
+                    raise RequestError(error_message) from error
+            else:
+                try:
+                    self._raise_for_status(response)
+                except APIError as error:
+                    delay = self._retry_delay(attempt, error.retry_after)
+                    if not self._is_retryable(error.status_code) or not self._should_retry(attempt, waited, delay):
+                        raise
+                else:
+                    return self._decode(response, method, full_url)
+
+            time.sleep(delay)
+            waited += delay
+            attempt += 1
 
     def close(self) -> None:
         """Release the underlying connection pool."""

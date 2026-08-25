@@ -18,8 +18,8 @@ def mock_requestor():
 
 @pytest.fixture
 def requestor():
-    """Fixture for a real Requestor, to be driven by requests_mock."""
-    with Requestor(url_root=f"{URL_ROOT}/", token="test-token") as instance:
+    """Fixture for a real Requestor, to be driven by requests_mock. Retries are off; see test_retries.py."""
+    with Requestor(url_root=f"{URL_ROOT}/", token="test-token", max_attempts=1) as instance:
         yield instance
 
 

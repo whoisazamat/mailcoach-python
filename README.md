@@ -43,6 +43,27 @@ with MailCoachClient(token="...", url_root="https://your-domain.mailcoach.app") 
 
 Requests time out after 30 seconds. Override with `MailCoachClient(..., timeout=60)`.
 
+## Rate limits and transient failures
+
+The transport retries on its own, so paginating a large list does not fall over when the API starts
+rate-limiting halfway through. A `429` waits for whatever `Retry-After` says; connection failures
+and `5xx` back off exponentially from one second. Client errors — `400`, `401`, `404`, `422` — are
+never retried, because a second identical request cannot fix them.
+
+Retrying stops at whichever cap comes first, and the original exception is re-raised untouched:
+
+```python
+client = MailCoachClient(
+    token="...",
+    url_root="https://your-domain.mailcoach.app",
+    max_attempts=3,       # total attempts, not extra ones; 1 disables retrying
+    max_retry_wait=60.0,  # seconds of sleeping allowed across one call
+)
+```
+
+A retry never happens if the next sleep would take the call past `max_retry_wait`, so the budget is
+a ceiling on added latency rather than a suggestion.
+
 ## Resources
 
 Every resource hangs off the client. Which operations exist depends on what the API supports —
@@ -188,7 +209,7 @@ Every `APIError` carries `status_code` and `body`. A 5xx arrives as a plain `API
 
 ```bash
 pip install -r requirements.txt
-pytest          # 152 tests, coverage gate at 100% of lines and branches
+pytest          # 174 tests, coverage gate at 100% of lines and branches
 ruff check .
 mypy
 ```
